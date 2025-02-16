@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		390528632D5D3FF600126D2B /* Battle Factory Utility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Battle Factory Utility.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		390528632D5D3FF600126D2B /* Pokét Guide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pokét Guide.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		390528742D5D3FFD00126D2B /* Battle Factory UtilityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Battle Factory UtilityTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3905287E2D5D3FFD00126D2B /* Battle Factory UtilityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Battle Factory UtilityUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -91,7 +91,7 @@
 		390528642D5D3FF600126D2B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				390528632D5D3FF600126D2B /* Battle Factory Utility.app */,
+				390528632D5D3FF600126D2B /* Pokét Guide.app */,
 				390528742D5D3FFD00126D2B /* Battle Factory UtilityTests.xctest */,
 				3905287E2D5D3FFD00126D2B /* Battle Factory UtilityUITests.xctest */,
 			);
@@ -128,7 +128,7 @@
 				3905289B2D5D436400126D2B /* json */,
 			);
 			productName = "Battle Factory Utility";
-			productReference = 390528632D5D3FF600126D2B /* Battle Factory Utility.app */;
+			productReference = 390528632D5D3FF600126D2B /* Pokét Guide.app */;
 			productType = "com.apple.product-type.application";
 		};
 		390528732D5D3FFD00126D2B /* Battle Factory UtilityTests */ = {
@@ -431,7 +431,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Rahul.Battle-Factory-Utility";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Pokét Guide";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -474,7 +474,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Rahul.Battle-Factory-Utility";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Pokét Guide";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;

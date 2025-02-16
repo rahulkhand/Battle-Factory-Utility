@@ -67,6 +67,10 @@ std::vector<std::string> to_lower(const std::vector<std::string>& myStrings)
 
 } // anonymous namespace
 
+int FactorySearcher::getInt(const nlohmann::json& input)
+{
+    return input.get<int>();
+}
 
 std::string FactorySearcher::getString(const nlohmann::json& input)
 {
@@ -85,9 +89,14 @@ std::vector<FactorySearcher::json> FactorySearcher::getPossibleSets(
                              bool exact,
                              const std::string& inputPokemonFile) const {
     
+    std::string anyMove = "";
+    for (const std::string& move : pkmnMoves)
+    {
+        anyMove += move;
+    }
     std::unordered_map<std::string, std::string> qualities = {
         {"name", pkmnName},
-        {"moves", pkmnMoves.empty() ? "" : pkmnMoves[0]},
+        {"moves", pkmnMoves.empty() ? "" : anyMove},
         {"item", pkmnItem}
     };
 

@@ -29,6 +29,7 @@ public:
                                  bool exact = false,
                                 const std::string& inputPokemonFile = "battle_factory_pokemon.json") const;
     
+    static int getInt(const json& input);
     static std::string getString(const json& input);
     static std::vector<std::string> getStrings(const json& input);
 };
