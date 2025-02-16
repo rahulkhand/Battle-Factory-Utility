@@ -20,6 +20,10 @@ enum DisplayPage {
     case EntryDetailPage
 }
 
+extension Color {
+    static var searchBoxBg: Color { Color (red: 0.172, green: 0.172, blue: 0.18) }
+}
+
 struct ContentView: View {
     @State private var pageState : DisplayPage = DisplayPage.SearchPage
     @State private var queryName = ""
@@ -174,29 +178,40 @@ struct SearchView: View {
             {
                 VStack
                 {
-                    Text("Pokémon Name").padding()
-                    Text("Pokémon Item").padding()
+                    Text("Pokémon Name").padding().foregroundStyle(.white)
+                    Text("Pokémon Item").foregroundStyle(.white).padding()
                 }
                 VStack
                 {
-                    TextField("Enter name ", text: $queryName).padding().autocorrectionDisabled()
-                    TextField("Enter item ", text: $queryItem).padding().autocorrectionDisabled()
+                    TextField("Enter name ", text: $queryName).padding().autocorrectionDisabled().foregroundStyle(.white)
+                    TextField("Enter item ", text: $queryItem).padding().autocorrectionDisabled().foregroundStyle(.white)
                 }
-            }.padding([.leading], 10).background(.white).opacity(0.9)
+            }.padding([.leading], 10).background(Color.searchBoxBg).opacity(0.9)
             VStack
             {
-                Text("Pokémon Moves")
+                Text("Pokémon Moves").foregroundStyle(.white)
                 HStack
                 {
-                    TextField("Move 1", text: $queryMoves[0]).padding().border(.blue).autocorrectionDisabled()
-                    TextField("Move 2", text: $queryMoves[1]).padding().border(.blue).autocorrectionDisabled()
+                    TextField("Move 1", text: $queryMoves[0]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
+                    TextField("Move 2", text: $queryMoves[1]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
                 }.opacity(0.8)
                 HStack
                 {
-                    TextField("Move 3", text: $queryMoves[2]).padding().border(.blue).autocorrectionDisabled()
-                    TextField("Move 4", text: $queryMoves[3]).padding().border(.blue).autocorrectionDisabled()
+                    TextField("Move 3", text: $queryMoves[2]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
+                    TextField("Move 4", text: $queryMoves[3]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
                 }
-            }.padding().background(.white).opacity(0.9)
+                Button
+                {
+                    for i in (0...(numMoves - 1)) {
+                        queryMoves[i] = ""
+                    }
+                    queryName = ""
+                    queryItem = ""
+                    
+                } label : {
+                    Text("Clear All").foregroundStyle(.red).frame(height: 7)
+                }.padding([.top], 10)
+            }.padding().background(Color.searchBoxBg).opacity(0.9)
             
             Button {
                 var cppMovesQuery : FactorySearcher.entryList = ["", "", "", ""]
