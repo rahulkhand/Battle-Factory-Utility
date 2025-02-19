@@ -247,7 +247,7 @@ struct SearchView: View {
                 {
                     TextField("Move 1", text: $queryMoves[0]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
                     TextField("Move 2", text: $queryMoves[1]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
-                }.opacity(0.8).padding(.top, 10)
+                }.opacity(0.8).padding(.vertical, 10)
                 HStack
                 {
                     TextField("Move 3", text: $queryMoves[2]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
