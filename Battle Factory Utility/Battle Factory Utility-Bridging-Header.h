@@ -3,3 +3,4 @@
 //
 
 #include "factorySearcher.hpp"
+#include "pointsCalc.hpp"

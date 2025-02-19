@@ -86,6 +86,8 @@ std::vector<FactorySearcher::json> FactorySearcher::getPossibleSets(
                              const std::string& pkmnName,
                              const std::vector<std::string>& pkmnMoves,
                              const std::string& pkmnItem,
+                             int roundNumber,
+                             bool isFightSeven,
                              bool exact,
                              const std::string& inputPokemonFile) const {
     
@@ -140,7 +142,16 @@ std::vector<FactorySearcher::json> FactorySearcher::getPossibleSets(
             }
         }
 
-        for (const auto& variant : pokemonRecord["variants"]) {
+        const size_t numOfVariants = pokemonRecord["variants"].size();
+        for (size_t i = 0; i < numOfVariants; i++) {
+            int variantNum = int(i) + 1;
+            const bool fightSevenNotClause = isFightSeven && roundNumber < 4 && variantNum != roundNumber + 1;
+            const bool regularNotClause = (!isFightSeven) && roundNumber < 5 && variantNum != roundNumber && variantNum != (roundNumber - 1);
+            if (fightSevenNotClause || regularNotClause)
+            {
+                continue;
+            }
+            const auto& variant = pokemonRecord["variants"][i];
             std::vector<std::string> variantMoves = to_lower(variant["moves"].get<std::vector<std::string>>());
             bool movesCriteria = qMoves.empty() ||
                                 (!exact && isSubstringsSublist(to_lower(qualityMoves), variantMoves)) ||

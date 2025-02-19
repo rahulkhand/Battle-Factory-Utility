@@ -11,6 +11,7 @@ import Foundation
 typealias json = nlohmann.json
 
 let pokemon_filepath = Bundle.main.path(forResource: "battle_factory_pokemon.json", ofType: nil) ?? ""
+let pStats_filepath = Bundle.main.path(forResource: "base_stats_pokemon.json", ofType: nil) ?? ""
 let factorySearcher = FactorySearcher()
 let numMoves = 4
 
@@ -24,6 +25,37 @@ extension Color {
     static var searchBoxBg: Color { Color (red: 0.172, green: 0.172, blue: 0.18) }
 }
 
+func getEvFromRound (round: Int, isFightSeven: Bool) -> Int32 {
+    if (round >= 8)
+    {
+        return 31
+    }
+    return Int32((round - (isFightSeven ? 0 : 1)) * 4)
+}
+
+public extension Binding {
+
+    static func convert<TInt, TFloat>(_ intBinding: Binding<TInt>) -> Binding<TFloat>
+    where TInt:   BinaryInteger,
+          TFloat: BinaryFloatingPoint{
+
+        Binding<TFloat> (
+            get: { TFloat(intBinding.wrappedValue) },
+            set: { intBinding.wrappedValue = TInt($0) }
+        )
+    }
+
+    static func convert<TFloat, TInt>(_ floatBinding: Binding<TFloat>) -> Binding<TInt>
+    where TFloat: BinaryFloatingPoint,
+          TInt:   BinaryInteger {
+
+        Binding<TInt> (
+            get: { TInt(floatBinding.wrappedValue) },
+            set: { floatBinding.wrappedValue = TFloat($0) }
+        )
+    }
+}
+
 struct ContentView: View {
     @State private var pageState : DisplayPage = DisplayPage.SearchPage
     @State private var queryName = ""
@@ -31,6 +63,8 @@ struct ContentView: View {
     @State private var queryMoves = [String](repeating: "", count: numMoves)
     @State private var pkmnSets = FactorySearcher.factorySets()
     @State private var selectedEntryIndex : Int?
+    @State private var roundNumber : Int = 1
+    @State private var fightSevenEnabled : Bool = false
     
     var body: some View
     {
@@ -43,7 +77,7 @@ struct ContentView: View {
             VStack{
                 if (pageState == DisplayPage.SearchPage)
                 {
-                    SearchView(pkmnSets: $pkmnSets, queryName: $queryName, queryItem: $queryItem, queryMoves: $queryMoves, pageState: $pageState)
+                    SearchView(pkmnSets: $pkmnSets, queryName: $queryName, queryItem: $queryItem, queryMoves: $queryMoves, pageState: $pageState, roundNumber: $roundNumber, fightSevenEnabled: $fightSevenEnabled)
                 }
                 else if (pageState == DisplayPage.ResultsPage)
                 {
@@ -51,7 +85,7 @@ struct ContentView: View {
                 }
                 else if (pageState == DisplayPage.EntryDetailPage)
                 {
-                    EntryDetailView(pokemonRecord: pkmnSets[selectedEntryIndex!], pageState: $pageState)
+                    EntryDetailView(pokemonRecord: pkmnSets[selectedEntryIndex!], pageState: $pageState, roundNumber: $roundNumber, isFightSeven: fightSevenEnabled)
                 }
             }
         }
@@ -61,6 +95,8 @@ struct ContentView: View {
 struct EntryDetailView: View {
     var pokemonRecord : json
     @Binding var pageState : DisplayPage
+    @Binding var roundNumber : Int
+    var isFightSeven : Bool
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -91,7 +127,8 @@ struct EntryDetailView: View {
                     Section {
                         ForEach(0..<statClasses.count, id: \.self) { index in
                             HStack {
-                                let statValue = FactorySearcher.getInt(pokemonRecord["evs"][std.string(statClasses[index])])
+                                let ev = FactorySearcher.getInt(pokemonRecord["evs"][std.string(statClasses[index])])
+                                let statValue = PointsCalc.getVariantStat(std.string(pStats_filepath), std.string(resultName), std.string(statClasses[index]), ev, getEvFromRound(round: roundNumber, isFightSeven: isFightSeven), 100, std.string(resultNature))
                                 Text("\(formattedStatClasses[index]): \(statValue)")
                                 Spacer()
                             }
@@ -170,36 +207,52 @@ struct SearchView: View {
     @Binding var queryItem : String
     @Binding var queryMoves : [String]
     @Binding var pageState : DisplayPage
+    @Binding var roundNumber : Int
+    @Binding var fightSevenEnabled : Bool
     
     var body: some View {
-        VStack
+        VStack (spacing: 0)
         {
             HStack
             {
-                VStack
+                Text("Set Number: \((roundNumber == 8) ? "8+" : String(roundNumber))").foregroundStyle(.white)
+                Slider(value: .convert($roundNumber), in: 1.0...8.0, step: 1.0)
+                    {
+                        Text("Set Number")
+                    }
+                Button
+                {
+                    fightSevenEnabled = !fightSevenEnabled
+                } label : {
+                    Text("Fight 7").padding(5).foregroundStyle(fightSevenEnabled ? .white : .gray)
+                }.border(fightSevenEnabled ? .white : .gray).background(fightSevenEnabled ? .orange : .clear)
+            }.padding([.horizontal, .top], 10).background(Color.searchBoxBg).opacity(0.9)
+            HStack
+            {
+                VStack (spacing: 0)
                 {
                     Text("Pokémon Name").padding().foregroundStyle(.white)
                     Text("Pokémon Item").foregroundStyle(.white).padding()
                 }
-                VStack
+                VStack (spacing : 0)
                 {
                     TextField("Enter name ", text: $queryName).padding().autocorrectionDisabled().foregroundStyle(.white)
                     TextField("Enter item ", text: $queryItem).padding().autocorrectionDisabled().foregroundStyle(.white)
                 }
-            }.padding([.leading], 10).background(Color.searchBoxBg).opacity(0.9)
-            VStack
+            }.background(Color.searchBoxBg).opacity(0.9)
+            VStack (spacing: 0)
             {
                 Text("Pokémon Moves").foregroundStyle(.white)
                 HStack
                 {
                     TextField("Move 1", text: $queryMoves[0]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
                     TextField("Move 2", text: $queryMoves[1]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
-                }.opacity(0.8)
+                }.opacity(0.8).padding(.top, 10)
                 HStack
                 {
                     TextField("Move 3", text: $queryMoves[2]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
                     TextField("Move 4", text: $queryMoves[3]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
-                }
+                }.padding(.bottom, 10)
                 Button
                 {
                     for i in (0...(numMoves - 1)) {
@@ -209,8 +262,8 @@ struct SearchView: View {
                     queryItem = ""
                     
                 } label : {
-                    Text("Clear All").foregroundStyle(.red).frame(height: 7)
-                }.padding([.top], 10)
+                    Text("Clear All").foregroundStyle(.red)
+                }
             }.padding().background(Color.searchBoxBg).opacity(0.9)
             
             Button {
@@ -219,7 +272,7 @@ struct SearchView: View {
                 {
                     cppMovesQuery[i] = std.string(queryMoves[i])
                 }
-                pkmnSets = factorySearcher.getPossibleSets(std.string(queryName), cppMovesQuery, std.string(queryItem), false, std.string(pokemon_filepath))
+                pkmnSets = factorySearcher.getPossibleSets(std.string(queryName), cppMovesQuery, std.string(queryItem), Int32(roundNumber), fightSevenEnabled, false, std.string(pokemon_filepath))
                 pageState = DisplayPage.ResultsPage
             } label : {
                 Text("Search").frame(width: 200.0, height: 100)

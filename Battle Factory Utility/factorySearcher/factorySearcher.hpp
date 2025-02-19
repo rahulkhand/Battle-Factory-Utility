@@ -26,6 +26,8 @@ public:
     std::vector<json> getPossibleSets(const std::string& pkmnName = "",
                                  const entryList& pkmnMoves = {},
                                  const std::string& pkmnItem = "",
+                                 int roundNumber = 5,
+                                 bool isFightSeven = false,
                                  bool exact = false,
                                 const std::string& inputPokemonFile = "battle_factory_pokemon.json") const;
     
