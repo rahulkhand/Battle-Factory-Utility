@@ -56,6 +56,19 @@ public extension Binding {
     }
 }
 
+struct TappableTextFieldStyle: TextFieldStyle {
+    @FocusState private var textFieldFocused: Bool
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding()
+            .background(Color.searchBoxBg.opacity(0.0001)) // unfortunately need to have some nonzero amount of color filled to trigger the expanded tap area
+            .focused($textFieldFocused)
+            .onTapGesture {
+                textFieldFocused = true
+            }
+    }
+}
+
 struct ContentView: View {
     @State private var pageState : DisplayPage = DisplayPage.SearchPage
     @State private var queryName = ""
@@ -236,8 +249,8 @@ struct SearchView: View {
                 }
                 VStack (spacing : 0)
                 {
-                    TextField("Enter name ", text: $queryName).padding().autocorrectionDisabled().foregroundStyle(.white)
-                    TextField("Enter item ", text: $queryItem).padding().autocorrectionDisabled().foregroundStyle(.white)
+                    TextField("Enter name ", text: $queryName).autocorrectionDisabled().foregroundStyle(.white).textFieldStyle(TappableTextFieldStyle())
+                    TextField("Enter item ", text: $queryItem).autocorrectionDisabled().foregroundStyle(.white).textFieldStyle(TappableTextFieldStyle())
                 }
             }.background(Color.searchBoxBg).opacity(0.9)
             VStack (spacing: 0)
@@ -245,13 +258,13 @@ struct SearchView: View {
                 Text("Pokémon Moves").foregroundStyle(.white)
                 HStack
                 {
-                    TextField("Move 1", text: $queryMoves[0]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
-                    TextField("Move 2", text: $queryMoves[1]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
+                    TextField("Move 1", text: $queryMoves[0]).border(.blue).foregroundStyle(.white).autocorrectionDisabled().textFieldStyle(TappableTextFieldStyle())
+                    TextField("Move 2", text: $queryMoves[1]).border(.blue).foregroundStyle(.white).autocorrectionDisabled().textFieldStyle(TappableTextFieldStyle())
                 }.opacity(0.8).padding(.vertical, 10)
                 HStack
                 {
-                    TextField("Move 3", text: $queryMoves[2]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
-                    TextField("Move 4", text: $queryMoves[3]).padding().border(.blue).foregroundStyle(.white).autocorrectionDisabled()
+                    TextField("Move 3", text: $queryMoves[2]).border(.blue).foregroundStyle(.white).autocorrectionDisabled().textFieldStyle(TappableTextFieldStyle())
+                    TextField("Move 4", text: $queryMoves[3]).border(.blue).foregroundStyle(.white).autocorrectionDisabled().textFieldStyle(TappableTextFieldStyle())
                 }.padding(.bottom, 10)
                 Button
                 {
